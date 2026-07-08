@@ -139,11 +139,11 @@ function AppContent() {
             </div>
 
             {/* Navigation links */}
-            <nav className="flex space-x-1">
+            <nav className="flex items-center space-x-1">
               <NavLink
                 to="/"
                 className={({ isActive }) =>
-                  `inline-flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs md:text-sm font-bold transition-all duration-200 focus-ring cursor-pointer ${
+                  `flex items-center justify-center space-x-2 px-3.5 py-2 rounded-xl text-xs md:text-sm font-bold transition-all duration-200 focus-ring cursor-pointer ${
                     isActive
                       ? 'bg-primary text-white shadow-md shadow-primary/15'
                       : 'text-text-secondary hover:text-text-primary hover:bg-slate-100/50'
@@ -157,7 +157,7 @@ function AppContent() {
               <NavLink
                 to="/gallery"
                 className={({ isActive }) =>
-                  `inline-flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs md:text-sm font-bold transition-all duration-200 focus-ring cursor-pointer ${
+                  `flex items-center justify-center space-x-2 px-3.5 py-2 rounded-xl text-xs md:text-sm font-bold transition-all duration-200 focus-ring cursor-pointer ${
                     isActive
                       ? 'bg-primary text-white shadow-md shadow-primary/15'
                       : 'text-text-secondary hover:text-text-primary hover:bg-slate-100/50'

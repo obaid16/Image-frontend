@@ -67,7 +67,7 @@
 
 /* Custom focus ring style */
 .focus-ring {
-  @apply focus:outline-none focus:ring-2 focus:ring-teal-700 focus:ring-offset-2;
+  @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2;
 }
 
 /* Skeleton loader shimmer animation */
