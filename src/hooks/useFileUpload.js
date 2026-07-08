@@ -2,6 +2,10 @@ import { useState, useCallback } from 'react';
 import axios from 'axios';
 import { imageService } from '../services/imageService';
 
+// Support production split-hosting by checking for target backend URL variables
+const BACKEND_URL = import.meta.env.VITE_API_URL || '';
+const UPLOAD_URL = `${BACKEND_URL}/api/images`;
+
 /**
  * Custom hook to manage image file uploads with Axios.
  * Provides real-time upload progress tracking and falls back
@@ -28,7 +32,7 @@ export const useFileUpload = () => {
 
     try {
       // 1. Attempt real API upload using Axios
-      const response = await axios.post('/api/images', formData, {
+      const response = await axios.post(UPLOAD_URL, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const API_BASE_URL = '/api';
+// Support production split-hosting by checking for target backend URL variables
+const BACKEND_URL = import.meta.env.VITE_API_URL || '';
+const API_BASE_URL = `${BACKEND_URL}/api`;
 
 // Flag to switch to localStorage mock DB if backend is offline or not implemented yet
 let useMock = false;
@@ -35,7 +37,8 @@ export const imageService = {
       if (data && Array.isArray(data.images)) {
         data.images = data.images.map((img) => ({
           id: img.id || img._id,
-          url: img.imagePath,
+          // Prepend target domain to static image assets if running in split-hosting
+          url: img.imagePath.startsWith('http') ? img.imagePath : `${BACKEND_URL}${img.imagePath}`,
           name: img.originalName || img.filename,
           uploadedAt: img.uploadDate,
           size: img.fileSize
