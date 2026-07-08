@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Trash2, Maximize2 } from 'lucide-react';
+import { Trash2, Maximize2, Image as ImageIcon } from 'lucide-react';
 
 /**
  * Format file size helper.
@@ -35,6 +35,9 @@ const formatDate = (dateString) => {
  * @param {function} onDelete - Deletion callback passing image object
  */
 const GalleryCard = ({ image, onClick, onDelete }) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
   const handleDelete = (e) => {
     e.stopPropagation(); // Avoid launching the lightbox click callback
     onDelete(image);
@@ -48,13 +51,30 @@ const GalleryCard = ({ image, onClick, onDelete }) => {
       className="group relative flex flex-col w-full rounded-2xl overflow-hidden bg-white border border-border-custom shadow-soft cursor-pointer select-none"
     >
       {/* 1. Zooming Image Asset */}
-      <div className="w-full aspect-[4/3] overflow-hidden relative bg-bg-app border-b border-border-custom/50">
-        <img
-          src={image.url}
-          alt={image.name}
-          loading="lazy"
-          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-        />
+      <div className="w-full aspect-[4/3] overflow-hidden relative bg-bg-app border-b border-border-custom/50 flex items-center justify-center">
+        {/* Shimmer skeleton shown while loading */}
+        {!imageLoaded && !imageError && (
+          <div className="absolute inset-0 shimmer z-10" />
+        )}
+        
+        {/* Fallback icon shown if image fails to load */}
+        {imageError ? (
+          <div className="flex flex-col items-center justify-center text-text-secondary p-4 space-y-1">
+            <ImageIcon className="w-8 h-8 opacity-40 text-text-secondary" />
+            <span className="text-[10px] font-bold uppercase tracking-wider opacity-60">Failed to load</span>
+          </div>
+        ) : (
+          <img
+            src={image.url}
+            alt={image.name}
+            loading="lazy"
+            onLoad={() => setImageLoaded(true)}
+            onError={() => setImageError(true)}
+            className={`w-full h-full object-cover transition-all duration-500 ease-out group-hover:scale-105 ${
+              imageLoaded ? 'opacity-100' : 'opacity-0 absolute'
+            }`}
+          />
+        )}
         {/* Soft dark gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3.5">
           <div className="flex items-center gap-1 text-white text-[9px] font-extrabold uppercase tracking-widest bg-black/40 backdrop-blur-md px-2 py-1 rounded-lg">

@@ -174,19 +174,19 @@ function AppContent() {
 
       {/* Main Container */}
       <main className="flex-grow max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <AnimatePresence mode="wait">
-          <Suspense fallback={
-            <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-4">
-              <Loader2 className="w-10 h-10 text-primary animate-spin" />
-              <span className="text-xs font-bold text-text-secondary uppercase tracking-widest animate-pulse">Loading gallery...</span>
-            </div>
-          }>
+        <Suspense fallback={
+          <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-4">
+            <Loader2 className="w-10 h-10 text-primary animate-spin" />
+            <span className="text-xs font-bold text-text-secondary uppercase tracking-widest animate-pulse">Loading gallery...</span>
+          </div>
+        }>
+          <AnimatePresence mode="wait">
             <Routes location={location} key={location.pathname}>
               <Route path="/" element={<Home />} />
               <Route path="/gallery" element={<Gallery />} />
             </Routes>
-          </Suspense>
-        </AnimatePresence>
+          </AnimatePresence>
+        </Suspense>
       </main>
 
       {/* Footer */}
