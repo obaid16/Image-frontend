@@ -1,74 +1,33 @@
-import React, { useState, useRef } from 'react';
-import { FiUploadCloud, FiAlertTriangle, FiX } from 'react-icons/fi';
+import React, { useRef, useState } from 'react';
+import { FiUploadCloud, FiAlertCircle } from 'react-icons/fi';
+import { motion, AnimatePresence } from 'framer-motion';
 
 /**
- * UploadArea component providing Drag & Drop zone and file picker button.
- * Validates files: only images, max size 5MB. Displays custom error alerts.
- * 
- * @param {function} onFilesSelected - Callback function triggered when valid files are chosen.
+ * Premium Drag-and-Drop File Upload Area.
+ * Styled with soft shimmers, active glow dropzones, and responsive layout.
+ *
+ * @param {function} onFilesSelected - Callback when files are chosen/dropped
+ * @param {string} error - Parent error text validation message if select fails
  */
-const UploadArea = ({ onFilesSelected }) => {
+const UploadArea = ({ onFilesSelected, error }) => {
   const [isDragActive, setIsDragActive] = useState(false);
-  const [error, setError] = useState(null);
   const fileInputRef = useRef(null);
 
-  // Constants
-  const MAX_FILE_SIZE_MB = 5;
-  const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+  // Trigger input element click
+  const handleButtonClick = () => {
+    fileInputRef.current?.click();
+  };
 
-  // Handle file inputs (either drop or picker selection)
-  const handleFiles = (files) => {
-    setError(null); // Reset previous errors
-    const selectedFiles = Array.from(files);
-    const validFiles = [];
-    const invalidTypes = [];
-    const overSized = [];
-
-    selectedFiles.forEach((file) => {
-      // 1. Validate MIME type (must be image/*)
-      if (!file.type.startsWith('image/')) {
-        invalidTypes.push(file.name);
-        return;
-      }
-
-      // 2. Validate file size (max 5MB)
-      if (file.size > MAX_FILE_SIZE_BYTES) {
-        overSized.push(file.name);
-        return;
-      }
-
-      validFiles.push(file);
-    });
-
-    // Create error message if any validation checks failed
-    if (invalidTypes.length > 0 || overSized.length > 0) {
-      let errorMsg = '';
-      if (invalidTypes.length > 0) {
-        errorMsg += `Invalid file type(s): ${invalidTypes.join(', ')}. Only image files are allowed. `;
-      }
-      if (overSized.length > 0) {
-        errorMsg += `File(s) exceed ${MAX_FILE_SIZE_MB}MB limit: ${overSized.join(', ')}.`;
-      }
-      setError(errorMsg.trim());
-      
-      // Auto-clear error after 6 seconds
-      setTimeout(() => setError(null), 6000);
-    }
-
-    // Pass valid files to parent callback
-    if (validFiles.length > 0) {
-      onFilesSelected(validFiles);
+  // Intercept selected input files
+  const handleFileInputChange = (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      onFilesSelected(Array.from(e.target.files));
+      e.target.value = ''; // Reset input to allow re-uploading same file
     }
   };
 
-  // Drag Event Handlers
+  // Drag listeners
   const handleDragOver = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragActive(true);
-  };
-
-  const handleDragEnter = (e) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragActive(true);
@@ -86,97 +45,95 @@ const UploadArea = ({ onFilesSelected }) => {
     setIsDragActive(false);
 
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      handleFiles(e.dataTransfer.files);
-    }
-  };
-
-  // Click handler to open file dialog
-  const openFileDialog = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
-
-  // File Picker Change handler
-  const handleFileChange = (e) => {
-    if (e.target.files && e.target.files.length > 0) {
-      handleFiles(e.target.files);
+      onFilesSelected(Array.from(e.dataTransfer.files));
     }
   };
 
   return (
-    <div className="w-full space-y-4">
-      {/* Error Alert Display */}
-      {error && (
-        <div className="flex items-start space-x-3 p-4 rounded-xl border border-rose-100 bg-rose-50 text-rose-800 shadow-sm animate-fadeIn">
-          <FiAlertTriangle className="w-5 h-5 shrink-0 text-rose-500 mt-0.5" />
-          <div className="flex-1 text-sm font-medium">
-            {error}
-          </div>
-          <button 
-            type="button" 
-            onClick={() => setError(null)} 
-            className="text-rose-500 hover:text-rose-700 focus-ring rounded-lg p-0.5"
-            aria-label="Dismiss error"
-          >
-            <FiX className="w-5 h-5" />
-          </button>
-        </div>
-      )}
-
-      {/* Drag & Drop Visual Area */}
-      <div
+    <div className="w-full">
+      <motion.div
         onDragOver={handleDragOver}
-        onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        onClick={openFileDialog}
-        className={`group relative flex flex-col items-center justify-center border-2 border-dashed rounded-2xl p-8 md:p-12 text-center cursor-pointer transition-all duration-300 ${
+        onClick={handleButtonClick}
+        whileHover={{ scale: 1.005, y: -2 }}
+        whileTap={{ scale: 0.995 }}
+        className={`w-full relative overflow-hidden rounded-3xl border-2 border-dashed py-14 px-6 md:px-12 text-center transition-all duration-300 cursor-pointer focus-ring select-none ${
           isDragActive
-            ? 'border-blue-500 bg-blue-50/50 scale-[0.99] shadow-inner'
-            : 'border-slate-200 bg-white hover:border-blue-400 hover:bg-slate-50/30 shadow-soft'
+            ? 'border-blue-500 bg-blue-50/40 shadow-glow'
+            : error
+            ? 'border-rose-300 bg-rose-50/30'
+            : 'border-slate-200 bg-white hover:border-blue-400 hover:shadow-soft-lg'
         }`}
       >
-        {/* Hidden input for selecting files */}
-        <input
-          ref={fileInputRef}
-          type="file"
-          multiple
-          accept="image/*"
-          onChange={handleFileChange}
-          className="hidden"
-          id="file-upload-input"
-        />
+        {/* Decorative Grid Background */}
+        <div className="absolute inset-0 grid-bg opacity-30 pointer-events-none" />
 
-        {/* Icon container */}
-        <div className={`p-4 rounded-full mb-4 transition-all duration-300 ${
-          isDragActive 
-            ? 'bg-blue-100 text-blue-600 scale-110 shadow-sm' 
-            : 'bg-slate-50 text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-500'
-        }`}>
-          <FiUploadCloud className="w-10 h-10" />
+        {/* Dynamic Glow Effect */}
+        <AnimatePresence>
+          {isDragActive && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              className="absolute inset-0 bg-radial-gradient from-blue-500/10 to-transparent pointer-events-none"
+            />
+          )}
+        </AnimatePresence>
+
+        <div className="relative z-10 flex flex-col items-center max-w-sm mx-auto">
+          {/* Animated Upload Icon */}
+          <motion.div
+            animate={isDragActive ? { y: [0, -8, 0], scale: 1.1 } : { y: 0 }}
+            transition={{ repeat: isDragActive ? Infinity : 0, duration: 1.5 }}
+            className={`w-14 h-14 rounded-2xl flex items-center justify-center border shadow-soft ${
+              isDragActive
+                ? 'bg-blue-600 border-blue-600 text-white'
+                : 'bg-slate-50 border-slate-100 text-slate-400'
+            }`}
+          >
+            <FiUploadCloud className="w-6 h-6" />
+          </motion.div>
+
+          <h3 className="mt-5 text-base font-bold text-slate-800 tracking-tight">
+            Drag & drop your images here
+          </h3>
+          <p className="mt-1.5 text-xs text-slate-400 font-semibold">
+            Or, <span className="text-blue-600 font-bold hover:underline">browse your files</span> from your device
+          </p>
+
+          {/* Formats and Limit Details */}
+          <div className="mt-6 flex flex-wrap justify-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+            <span className="bg-slate-50 border border-slate-100 px-2 py-0.5 rounded-lg">JPG, JPEG, PNG, WEBP</span>
+            <span className="bg-slate-50 border border-slate-100 px-2 py-0.5 rounded-lg">MAX 5MB PER IMAGE</span>
+          </div>
         </div>
 
-        {/* Prompt texts */}
-        <h3 className="text-base font-semibold text-slate-800 mb-1.5">
-          {isDragActive ? 'Drop your images here' : 'Drag & drop your images here'}
-        </h3>
-        <p className="text-xs text-slate-500 mb-5 max-w-xs">
-          Supports PNG, JPG, JPEG, WEBP or GIF (Max {MAX_FILE_SIZE_MB}MB per file)
-        </p>
+        {/* Hidden File Picker Input */}
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleFileInputChange}
+          multiple
+          accept="image/*"
+          className="hidden"
+        />
+      </motion.div>
 
-        {/* Action Button */}
-        <button
-          type="button"
-          className="inline-flex items-center justify-center px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg focus-ring"
-          onClick={(e) => {
-            e.stopPropagation(); // Avoid triggering container click
-            openFileDialog();
-          }}
-        >
-          Select Files
-        </button>
-      </div>
+      {/* Validation Error Banner */}
+      <AnimatePresence>
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="mt-3.5 flex items-center gap-2.5 p-3 rounded-2xl border border-rose-100 bg-rose-50 text-rose-700 text-xs font-semibold"
+          >
+            <FiAlertCircle className="w-4 h-4 shrink-0" />
+            <span>{error}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

@@ -152,21 +152,15 @@ const Gallery = () => {
       </div>
 
       {/* Main Content Area */}
-      {loading ? (
-        // Loading State
-        <div className="flex flex-col items-center justify-center py-24 space-y-4">
-          <FiLoader className="w-10 h-10 text-blue-600 animate-spin" />
-          <p className="text-sm font-semibold text-slate-600">Loading gallery images...</p>
-        </div>
-      ) : error ? (
+      {error ? (
         // Error State
-        <div className="max-w-md mx-auto p-6 rounded-2xl border border-rose-100 bg-rose-50 text-center space-y-4">
+        <div className="max-w-md mx-auto p-6 rounded-3xl border border-rose-100 bg-rose-50 text-center space-y-4">
           <FiAlertCircle className="w-10 h-10 text-rose-500 mx-auto" />
           <h3 className="text-base font-bold text-slate-800">Something went wrong</h3>
           <p className="text-sm text-slate-600">{error}</p>
           <button
             onClick={() => loadImages(currentPage, filterType, sortOrder)}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition-colors focus-ring"
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition-colors focus-ring cursor-pointer"
           >
             Retry
           </button>
@@ -178,13 +172,16 @@ const Gallery = () => {
             images={images}
             onImageClick={handleImageClick}
             onImageDelete={handleDeleteImage}
+            loading={loading}
           />
           
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={(page) => setCurrentPage(page)}
-          />
+          {!loading && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={(page) => setCurrentPage(page)}
+            />
+          )}
         </>
       )}
 

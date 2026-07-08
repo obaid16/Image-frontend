@@ -1,8 +1,9 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 
 /**
  * Reusable ProgressBar component.
- * Displays a smooth blue progress bar with status styling.
+ * Uses Framer Motion for smooth, layout-animating progress fills.
  * 
  * @param {number} progress - Progress percentage (0 - 100)
  * @param {string} status - Upload status ('uploading' | 'success' | 'failed')
@@ -23,21 +24,23 @@ const ProgressBar = ({ progress, status }) => {
 
   return (
     <div className="w-full">
-      {/* Outer wrapper */}
-      <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
-        {/* Animated fill */}
-        <div
-          className={`h-full rounded-full transition-all duration-300 ease-out ${getBarColor()}`}
-          style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
+      {/* Outer track */}
+      <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+        {/* Framer Motion animated fill */}
+        <motion.div
+          className={`h-full rounded-full ${getBarColor()}`}
+          initial={{ width: 0 }}
+          animate={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
+          transition={{ duration: 0.3, ease: 'easeOut' }}
         />
       </div>
       
-      {/* Percentage text */}
-      <div className="flex justify-between items-center mt-1.5">
-        <span className="text-xs font-medium text-slate-500">
-          {status === 'success' ? 'Completed' : status === 'failed' ? 'Error' : 'Uploading'}
+      {/* Percentage details */}
+      <div className="flex justify-between items-center mt-2">
+        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+          {status === 'success' ? 'Completed' : status === 'failed' ? 'Failed' : 'Uploading'}
         </span>
-        <span className="text-xs font-semibold text-slate-700">
+        <span className="text-xs font-extrabold text-slate-700">
           {Math.round(progress)}%
         </span>
       </div>
