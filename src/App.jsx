@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, NavLink, useLocation } from 'react-router-dom';
-import { UploadCloud, Image, Heart, Folder, Trash2 } from 'lucide-react';
+import { UploadCloud, Image, Heart, Folder, Trash2, Loader2 } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import UploadArea from './components/UploadArea';
 import UploadCard from './components/UploadCard';
-import Gallery from './pages/Gallery';
 import { useFileUpload } from './hooks/useFileUpload';
 import { imageService } from './services/imageService';
+
+// Lazy load the Gallery page component
+const Gallery = lazy(() => import('./pages/Gallery'));
 
 /**
  * Premium Home subcomponent page.
@@ -173,10 +175,17 @@ function AppContent() {
       {/* Main Container */}
       <main className="flex-grow max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <AnimatePresence mode="wait">
-          <Routes location={location} key={location.pathname}>
-            <Route path="/" element={<Home />} />
-            <Route path="/gallery" element={<Gallery />} />
-          </Routes>
+          <Suspense fallback={
+            <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-4">
+              <Loader2 className="w-10 h-10 text-primary animate-spin" />
+              <span className="text-xs font-bold text-text-secondary uppercase tracking-widest animate-pulse">Loading gallery...</span>
+            </div>
+          }>
+            <Routes location={location} key={location.pathname}>
+              <Route path="/" element={<Home />} />
+              <Route path="/gallery" element={<Gallery />} />
+            </Routes>
+          </Suspense>
         </AnimatePresence>
       </main>
 
