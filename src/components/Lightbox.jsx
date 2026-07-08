@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { FiX, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 /**
@@ -50,14 +50,14 @@ const Lightbox = ({ image, currentIndex, totalCount, onClose, onPrev, onNext }) 
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={handleBackdropClick}
-        className="fixed inset-0 z-50 flex flex-col items-center justify-between bg-slate-950/95 backdrop-blur-md p-4 select-none"
+        className="fixed inset-0 z-50 flex flex-col items-center justify-between bg-slate-950/90 backdrop-blur-md p-4 select-none"
         role="dialog"
         aria-modal="true"
       >
         {/* 1. Header Toolbar */}
-        <div className="w-full max-w-7xl flex items-center justify-between text-white py-4 px-4 md:px-8 z-10 border-b border-white/5">
+        <div className="w-full max-w-7xl flex items-center justify-between text-white py-4 px-4 md:px-8 z-10 border-b border-white/10">
           <div className="flex flex-col min-w-0">
-            <span className="text-sm font-bold truncate max-w-[200px] md:max-w-md" title={image.name}>
+            <span className="text-sm font-bold truncate max-w-[200px] md:max-w-md text-slate-100" title={image.name}>
               {image.name}
             </span>
             <span className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider mt-1">
@@ -67,14 +67,14 @@ const Lightbox = ({ image, currentIndex, totalCount, onClose, onPrev, onNext }) 
           
           {/* Close Button */}
           <motion.button
-            whileHover={{ scale: 1.05 }}
+            whileHover={{ scale: 1.05, backgroundColor: 'rgba(255, 255, 255, 0.15)' }}
             whileTap={{ scale: 0.95 }}
             onClick={onClose}
-            className="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/15 text-white border border-white/5 flex items-center justify-center transition-colors focus-ring cursor-pointer"
+            className="w-10 h-10 rounded-xl bg-white/10 text-white border border-white/10 flex items-center justify-center transition-colors focus-ring cursor-pointer"
             title="Close (Esc)"
             aria-label="Close lightbox"
           >
-            <FiX className="w-5 h-5" />
+            <X className="w-5 h-5" />
           </motion.button>
         </div>
 
@@ -84,14 +84,14 @@ const Lightbox = ({ image, currentIndex, totalCount, onClose, onPrev, onNext }) 
           {/* Left Arrow Button */}
           <div className="absolute left-2 md:left-6 z-20">
             <motion.button
-              whileHover={{ scale: 1.1 }}
+              whileHover={{ scale: 1.1, backgroundColor: 'rgba(255, 255, 255, 0.1)' }}
               whileTap={{ scale: 0.9 }}
               onClick={onPrev}
-              className="w-11 h-11 rounded-xl bg-white/5 hover:bg-white/10 text-white/80 hover:text-white border border-white/5 flex items-center justify-center transition-all duration-200 focus-ring cursor-pointer"
+              className="w-11 h-11 rounded-xl bg-white/5 text-white/80 hover:text-white border border-white/10 flex items-center justify-center transition-all duration-200 focus-ring cursor-pointer"
               title="Previous Image (Left Arrow)"
               aria-label="Previous image"
             >
-              <FiChevronLeft className="w-5 h-5" />
+              <ChevronLeft className="w-5 h-5" />
             </motion.button>
           </div>
 
@@ -112,20 +112,20 @@ const Lightbox = ({ image, currentIndex, totalCount, onClose, onPrev, onNext }) 
           {/* Right Arrow Button */}
           <div className="absolute right-2 md:right-6 z-20">
             <motion.button
-              whileHover={{ scale: 1.1 }}
+              whileHover={{ scale: 1.1, backgroundColor: 'rgba(255, 255, 255, 0.1)' }}
               whileTap={{ scale: 0.9 }}
               onClick={onNext}
-              className="w-11 h-11 rounded-xl bg-white/5 hover:bg-white/10 text-white/80 hover:text-white border border-white/5 flex items-center justify-center transition-all duration-200 focus-ring cursor-pointer"
+              className="w-11 h-11 rounded-xl bg-white/5 text-white/80 hover:text-white border border-white/10 flex items-center justify-center transition-all duration-200 focus-ring cursor-pointer"
               title="Next Image (Right Arrow)"
               aria-label="Next image"
             >
-              <FiChevronRight className="w-5 h-5" />
+              <ChevronRight className="w-5 h-5" />
             </motion.button>
           </div>
         </div>
 
         {/* 3. Helper Info Footer */}
-        <div className="w-full text-center text-slate-500 text-[10px] font-bold uppercase tracking-wider py-4 border-t border-white/5">
+        <div className="w-full text-center text-slate-500 text-[10px] font-bold uppercase tracking-wider py-4 border-t border-white/10">
           Use Left/Right keyboard arrows to navigate • Escape to exit
         </div>
       </motion.div>

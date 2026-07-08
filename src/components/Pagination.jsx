@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 /**
@@ -35,12 +35,12 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   };
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between border-t border-slate-100/60 px-4 py-5 sm:px-6 bg-white/70 backdrop-blur-md rounded-2xl border border-slate-100 shadow-soft mt-12 gap-4">
+    <div className="flex flex-col sm:flex-row items-center justify-between border-t border-border-custom/50 px-4 py-5 sm:px-6 bg-white/70 backdrop-blur-md rounded-2xl border border-border-custom shadow-soft mt-12 gap-4">
       {/* Page description */}
       <div className="text-center sm:text-left">
-        <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">
-          Page <span className="text-slate-800 font-extrabold">{currentPage}</span> of{' '}
-          <span className="text-slate-800 font-extrabold">{totalPages}</span>
+        <p className="text-xs text-text-secondary font-bold uppercase tracking-wider">
+          Page <span className="text-text-primary font-extrabold">{currentPage}</span> of{' '}
+          <span className="text-text-primary font-extrabold">{totalPages}</span>
         </p>
       </div>
 
@@ -52,11 +52,11 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
           whileTap={{ scale: currentPage === 1 ? 1 : 0.95 }}
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="relative inline-flex items-center justify-center w-9 h-9 rounded-xl border border-slate-200 bg-white text-slate-500 hover:text-slate-900 hover:border-slate-300 disabled:opacity-40 disabled:hover:bg-white disabled:hover:border-slate-200 disabled:hover:text-slate-400 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
+          className="relative inline-flex items-center justify-center w-9 h-9 rounded-xl border border-border-custom bg-white text-text-secondary hover:text-text-primary hover:border-primary disabled:opacity-40 disabled:hover:bg-white disabled:hover:border-border-custom disabled:hover:text-text-secondary disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
           title="Previous Page"
           aria-label="Previous Page"
         >
-          <FiChevronLeft className="w-4 h-4" />
+          <ChevronLeft className="w-4 h-4" />
         </motion.button>
 
         {/* Page numbers */}
@@ -66,7 +66,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
               return (
                 <span
                   key={`ellipsis-${index}`}
-                  className="w-9 h-9 flex items-center justify-center text-slate-400 text-xs font-bold"
+                  className="w-9 h-9 flex items-center justify-center text-text-secondary text-xs font-bold"
                 >
                   ...
                 </span>
@@ -82,8 +82,8 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
                 onClick={() => onPageChange(page)}
                 className={`w-9 h-9 flex items-center justify-center rounded-xl text-xs font-extrabold transition-all duration-200 cursor-pointer ${
                   isActive
-                    ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                    : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-900'
+                    ? 'bg-primary text-white shadow-md shadow-primary/20'
+                    : 'bg-white border border-border-custom text-text-secondary hover:border-primary hover:text-text-primary'
                 }`}
               >
                 {page}
@@ -98,11 +98,11 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
           whileTap={{ scale: currentPage === totalPages ? 1 : 0.95 }}
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="relative inline-flex items-center justify-center w-9 h-9 rounded-xl border border-slate-200 bg-white text-slate-500 hover:text-slate-900 hover:border-slate-300 disabled:opacity-40 disabled:hover:bg-white disabled:hover:border-slate-200 disabled:hover:text-slate-400 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
+          className="relative inline-flex items-center justify-center w-9 h-9 rounded-xl border border-border-custom bg-white text-text-secondary hover:text-text-primary hover:border-primary disabled:opacity-40 disabled:hover:bg-white disabled:hover:border-border-custom disabled:hover:text-text-secondary disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
           title="Next Page"
           aria-label="Next Page"
         >
-          <FiChevronRight className="w-4 h-4" />
+          <ChevronRight className="w-4 h-4" />
         </motion.button>
       </div>
     </div>

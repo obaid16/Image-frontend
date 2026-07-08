@@ -13,19 +13,19 @@ const ProgressBar = ({ progress, status }) => {
   const getBarColor = () => {
     switch (status) {
       case 'success':
-        return 'bg-emerald-500';
+        return 'bg-success';
       case 'failed':
-        return 'bg-rose-500';
+        return 'bg-danger';
       case 'uploading':
       default:
-        return 'bg-blue-600';
+        return 'bg-secondary';
     }
   };
 
   return (
     <div className="w-full">
       {/* Outer track */}
-      <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+      <div className="w-full bg-bg-app border border-border-custom/50 rounded-full h-2 overflow-hidden shadow-inner">
         {/* Framer Motion animated fill */}
         <motion.div
           className={`h-full rounded-full ${getBarColor()}`}
@@ -36,11 +36,11 @@ const ProgressBar = ({ progress, status }) => {
       </div>
       
       {/* Percentage details */}
-      <div className="flex justify-between items-center mt-2">
-        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+      <div className="flex justify-between items-center mt-2.5">
+        <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider">
           {status === 'success' ? 'Completed' : status === 'failed' ? 'Failed' : 'Uploading'}
         </span>
-        <span className="text-xs font-extrabold text-slate-700">
+        <span className="text-xs font-extrabold text-text-primary">
           {Math.round(progress)}%
         </span>
       </div>

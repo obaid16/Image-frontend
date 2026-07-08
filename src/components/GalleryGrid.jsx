@@ -25,7 +25,7 @@ const GalleryGrid = ({ images, onImageClick, onImageDelete, loading }) => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: idx * 0.05 }}
-            className="w-full aspect-[4/5] rounded-2xl border border-slate-100/80 bg-white p-3.5 flex flex-col justify-between shadow-soft"
+            className="w-full aspect-[4/5] rounded-2xl border border-border-custom bg-white p-3.5 flex flex-col justify-between shadow-soft"
           >
             {/* Top image box skeleton */}
             <div className="w-full h-[75%] rounded-xl shimmer" />

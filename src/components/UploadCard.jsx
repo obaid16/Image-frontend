@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FiCheckCircle, FiAlertCircle, FiLoader } from 'react-icons/fi';
+import { CheckCircle2, AlertCircle, Loader2, Trash2 } from 'lucide-react';
 import ProgressBar from './ProgressBar';
 
 /**
@@ -20,8 +20,9 @@ const formatFileSize = (bytes) => {
  * Animates into view smoothly using Framer Motion.
  * 
  * @param {object} fileObj - Target uploading file information
+ * @param {function} onDismiss - Callback to remove card from the queue list
  */
-const UploadCard = ({ fileObj }) => {
+const UploadCard = ({ fileObj, onDismiss }) => {
   const { name, size, progress, status, error, file } = fileObj;
   const [previewUrl, setPreviewUrl] = useState(null);
 
@@ -41,24 +42,24 @@ const UploadCard = ({ fileObj }) => {
     switch (status) {
       case 'success':
         return {
-          bgClass: 'bg-emerald-50/30 border-emerald-100',
-          badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-100/50',
-          icon: <FiCheckCircle className="w-5 h-5 text-emerald-500 shrink-0" />,
+          bgClass: 'bg-success/5 border-success/20',
+          badgeClass: 'bg-success/10 text-success border-success/20',
+          icon: <CheckCircle2 className="w-5 h-5 text-success shrink-0" />,
           label: 'Success'
         };
       case 'failed':
         return {
-          bgClass: 'bg-rose-50/30 border-rose-100',
-          badgeClass: 'bg-rose-50 text-rose-700 border-rose-100/50',
-          icon: <FiAlertCircle className="w-5 h-5 text-rose-500 shrink-0" />,
+          bgClass: 'bg-danger/5 border-danger/20',
+          badgeClass: 'bg-danger/10 text-danger border-danger/20',
+          icon: <AlertCircle className="w-5 h-5 text-danger shrink-0" />,
           label: 'Failed'
         };
       case 'uploading':
       default:
         return {
-          bgClass: 'bg-white border-slate-100',
-          badgeClass: 'bg-blue-50 text-blue-700 border-blue-100/30',
-          icon: <FiLoader className="w-5 h-5 text-blue-500 animate-spin shrink-0" />,
+          bgClass: 'bg-white/70 border-border-custom',
+          badgeClass: 'bg-primary/10 text-primary border-primary/20',
+          icon: <Loader2 className="w-5 h-5 text-primary animate-spin shrink-0" />,
           label: 'Uploading'
         };
     }
@@ -72,10 +73,10 @@ const UploadCard = ({ fileObj }) => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -15 }}
       transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-      className={`p-4 rounded-2xl border glass-panel glass-panel-hover flex gap-4 ${statusInfo.bgClass}`}
+      className={`p-4 rounded-2xl border backdrop-blur-md shadow-soft flex gap-4 transition-colors duration-300 ${statusInfo.bgClass}`}
     >
       {/* 1. Image Thumbnail Preview */}
-      <div className="w-14 h-14 rounded-xl border border-slate-100/80 bg-slate-50 overflow-hidden shrink-0 flex items-center justify-center relative shadow-inner">
+      <div className="w-14 h-14 rounded-xl border border-border-custom bg-bg-app overflow-hidden shrink-0 flex items-center justify-center relative shadow-inner">
         {previewUrl ? (
           <img
             src={previewUrl}
@@ -91,10 +92,10 @@ const UploadCard = ({ fileObj }) => {
       <div className="flex-1 min-w-0 flex flex-col justify-between">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <h4 className="text-sm font-bold text-slate-800 truncate" title={name}>
+            <h4 className="text-sm font-bold text-text-primary truncate" title={name}>
               {name}
             </h4>
-            <p className="text-xs text-slate-400 font-semibold mt-0.5">
+            <p className="text-xs text-text-secondary font-semibold mt-0.5">
               {formatFileSize(size)}
             </p>
           </div>
@@ -111,15 +112,29 @@ const UploadCard = ({ fileObj }) => {
 
         {/* Fail Error Text Banner */}
         {status === 'failed' && (
-          <div className="text-[11px] text-rose-600 mt-2 font-bold bg-rose-50/50 p-2.5 rounded-xl border border-rose-100/40">
+          <div className="text-[11px] text-danger mt-2 font-bold bg-danger/5 p-2.5 rounded-xl border border-danger/10">
             {error || 'Upload was rejected by server.'}
           </div>
         )}
       </div>
 
-      {/* 3. Status Action Icon */}
-      <div className="shrink-0 pt-0.5 flex items-start">
-        {statusInfo.icon}
+      {/* 3. Status Action Icon & Delete Icon */}
+      <div className="shrink-0 pt-0.5 flex flex-col items-end justify-between">
+        <div className="flex items-center gap-1">
+          {statusInfo.icon}
+          {onDismiss && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onDismiss();
+              }}
+              className="text-text-secondary hover:text-danger transition-colors p-1 rounded-lg hover:bg-slate-100/50 cursor-pointer"
+              title="Remove from queue"
+            >
+              <Trash2 className="w-4.5 h-4.5" />
+            </button>
+          )}
+        </div>
       </div>
     </motion.div>
   );

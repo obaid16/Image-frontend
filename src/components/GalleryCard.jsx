@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { FiTrash2, FiMaximize2, FiLoader } from 'react-icons/fi';
+import { Trash2, Maximize2 } from 'lucide-react';
 
 /**
  * Format file size helper.
@@ -32,23 +32,12 @@ const formatDate = (dateString) => {
  *
  * @param {object} image - Image data: { id, url, name, uploadedAt, size }
  * @param {function} onClick - Lightbox click callback
- * @param {function} onDelete - Deletion promise callback
+ * @param {function} onDelete - Deletion callback passing image object
  */
 const GalleryCard = ({ image, onClick, onDelete }) => {
-  const [isDeleting, setIsDeleting] = useState(false);
-
-  const handleDelete = async (e) => {
+  const handleDelete = (e) => {
     e.stopPropagation(); // Avoid launching the lightbox click callback
-    if (window.confirm(`Are you sure you want to delete "${image.name}"?`)) {
-      setIsDeleting(true);
-      try {
-        await onDelete(image.id);
-      } catch (err) {
-        console.error('Delete failed:', err);
-        alert('Failed to delete image. Please try again.');
-        setIsDeleting(false);
-      }
-    }
+    onDelete(image);
   };
 
   return (
@@ -56,10 +45,10 @@ const GalleryCard = ({ image, onClick, onDelete }) => {
       layout
       whileHover={{ y: -6, transition: { duration: 0.25, ease: 'easeOut' } }}
       onClick={onClick}
-      className="group relative aspect-[4/5] w-full rounded-2xl overflow-hidden bg-slate-50 border border-slate-100/80 shadow-soft cursor-pointer select-none"
+      className="group relative flex flex-col w-full rounded-2xl overflow-hidden bg-white border border-border-custom shadow-soft cursor-pointer select-none"
     >
       {/* 1. Zooming Image Asset */}
-      <div className="w-full h-full overflow-hidden relative">
+      <div className="w-full aspect-[4/3] overflow-hidden relative bg-bg-app border-b border-border-custom/50">
         <img
           src={image.url}
           alt={image.name}
@@ -67,49 +56,38 @@ const GalleryCard = ({ image, onClick, onDelete }) => {
           className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
         />
         {/* Soft dark gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-900/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3.5">
+          <div className="flex items-center gap-1 text-white text-[9px] font-extrabold uppercase tracking-widest bg-black/40 backdrop-blur-md px-2 py-1 rounded-lg">
+            <Maximize2 className="w-2.5 h-2.5" />
+            <span>Maximize</span>
+          </div>
+        </div>
       </div>
 
       {/* 2. Top-Right Hover Toolbar (Delete Button) */}
-      <div className="absolute top-3.5 right-3.5 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
+      <div className="absolute top-3.5 right-3.5 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-350 z-20">
         <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           onClick={handleDelete}
-          disabled={isDeleting}
-          className="w-9 h-9 rounded-xl glass-panel flex items-center justify-center text-rose-500 hover:bg-rose-50 hover:text-rose-600 transition-colors focus-ring border-none shadow-md cursor-pointer"
+          className="w-8 h-8 rounded-xl bg-danger/10 hover:bg-danger text-danger hover:text-white transition-all duration-200 flex items-center justify-center shadow-md cursor-pointer border-none"
           title="Delete image"
         >
-          {isDeleting ? (
-            <FiLoader className="w-4 h-4 animate-spin text-rose-500" />
-          ) : (
-            <FiTrash2 className="w-4 h-4" />
-          )}
+          <Trash2 className="w-4 h-4" />
         </motion.button>
       </div>
 
-      {/* 3. Bottom Gradient Text Content */}
-      <div className="absolute bottom-0 left-0 right-0 p-4 z-10 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-350 bg-gradient-to-t from-black/70 via-black/40 to-transparent pt-12">
-        <div className="flex items-center gap-1.5 text-blue-400 text-[10px] font-extrabold uppercase tracking-widest mb-1">
-          <FiMaximize2 className="w-3 h-3" />
-          <span>Click to view</span>
-        </div>
-        <h3 className="text-sm font-bold text-white truncate" title={image.name}>
+      {/* 3. Bottom White Panel Text Content */}
+      <div className="p-4 bg-white flex flex-col flex-grow">
+        <h3 className="text-sm font-bold text-text-primary truncate" title={image.name}>
           {image.name}
         </h3>
         
         {/* Metadata sub-row */}
-        <div className="flex items-center justify-between mt-2.5 pt-2 border-t border-white/10 text-[10px] font-bold text-slate-300 uppercase tracking-wider">
+        <div className="flex items-center justify-between mt-2.5 pt-2 border-t border-border-custom text-[10px] font-bold text-text-secondary uppercase tracking-wider">
           <span>{formatDate(image.uploadedAt)}</span>
           {image.size && <span>{formatFileSize(image.size)}</span>}
         </div>
-      </div>
-
-      {/* Static fallbacks (Visible when overlay is off) */}
-      <div className="absolute bottom-0 left-0 right-0 p-3.5 bg-gradient-to-t from-slate-900/60 to-transparent group-hover:opacity-0 transition-opacity duration-200 z-10 pointer-events-none">
-        <h4 className="text-xs font-bold text-white truncate">
-          {image.name}
-        </h4>
       </div>
     </motion.div>
   );

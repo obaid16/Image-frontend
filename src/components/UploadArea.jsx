@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { FiUploadCloud, FiAlertCircle } from 'react-icons/fi';
+import { UploadCloud, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 /**
@@ -60,10 +60,10 @@ const UploadArea = ({ onFilesSelected, error }) => {
         whileTap={{ scale: 0.995 }}
         className={`w-full relative overflow-hidden rounded-3xl border-2 border-dashed py-14 px-6 md:px-12 text-center transition-all duration-300 cursor-pointer focus-ring select-none ${
           isDragActive
-            ? 'border-blue-500 bg-blue-50/40 shadow-glow'
+            ? 'border-primary bg-primary-50/10 shadow-glow'
             : error
-            ? 'border-rose-300 bg-rose-50/30'
-            : 'border-slate-200 bg-white hover:border-blue-400 hover:shadow-soft-lg'
+            ? 'border-danger/30 bg-danger/5'
+            : 'border-secondary/40 bg-white/70 backdrop-blur-md hover:border-primary hover:shadow-glow'
         }`}
       >
         {/* Decorative Grid Background */}
@@ -76,7 +76,7 @@ const UploadArea = ({ onFilesSelected, error }) => {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
-              className="absolute inset-0 bg-radial-gradient from-blue-500/10 to-transparent pointer-events-none"
+              className="absolute inset-0 bg-radial-gradient from-primary/10 to-transparent pointer-events-none"
             />
           )}
         </AnimatePresence>
@@ -88,24 +88,24 @@ const UploadArea = ({ onFilesSelected, error }) => {
             transition={{ repeat: isDragActive ? Infinity : 0, duration: 1.5 }}
             className={`w-14 h-14 rounded-2xl flex items-center justify-center border shadow-soft ${
               isDragActive
-                ? 'bg-blue-600 border-blue-600 text-white'
-                : 'bg-slate-50 border-slate-100 text-slate-400'
+                ? 'bg-primary border-primary text-white'
+                : 'bg-bg-app border-border-custom text-text-secondary'
             }`}
           >
-            <FiUploadCloud className="w-6 h-6" />
+            <UploadCloud className="w-6 h-6" />
           </motion.div>
 
-          <h3 className="mt-5 text-base font-bold text-slate-800 tracking-tight">
+          <h3 className="mt-5 text-base font-bold text-text-primary tracking-tight">
             Drag & drop your images here
           </h3>
-          <p className="mt-1.5 text-xs text-slate-400 font-semibold">
-            Or, <span className="text-blue-600 font-bold hover:underline">browse your files</span> from your device
+          <p className="mt-1.5 text-xs text-text-secondary font-semibold">
+            Or, <span className="text-primary font-bold hover:underline">browse your files</span> from your device
           </p>
 
           {/* Formats and Limit Details */}
-          <div className="mt-6 flex flex-wrap justify-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-            <span className="bg-slate-50 border border-slate-100 px-2 py-0.5 rounded-lg">JPG, JPEG, PNG, WEBP</span>
-            <span className="bg-slate-50 border border-slate-100 px-2 py-0.5 rounded-lg">MAX 5MB PER IMAGE</span>
+          <div className="mt-6 flex flex-wrap justify-center gap-2 text-[10px] font-bold text-text-secondary uppercase tracking-wider">
+            <span className="bg-bg-app/80 border border-border-custom px-2 py-0.5 rounded-lg">JPG, JPEG, PNG, WEBP</span>
+            <span className="bg-bg-app/80 border border-border-custom px-2 py-0.5 rounded-lg">MAX 5MB PER IMAGE</span>
           </div>
         </div>
 
@@ -127,9 +127,9 @@ const UploadArea = ({ onFilesSelected, error }) => {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="mt-3.5 flex items-center gap-2.5 p-3 rounded-2xl border border-rose-100 bg-rose-50 text-rose-700 text-xs font-semibold"
+            className="mt-3.5 flex items-center gap-2.5 p-3 rounded-2xl border border-danger/20 bg-danger/5 text-danger text-xs font-semibold"
           >
-            <FiAlertCircle className="w-4 h-4 shrink-0" />
+            <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{error}</span>
           </motion.div>
         )}
